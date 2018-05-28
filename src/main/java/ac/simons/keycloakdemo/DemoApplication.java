@@ -25,6 +25,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,6 +34,16 @@ import java.security.Principal;
 import java.util.Map;
 
 import static org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI;
+/**
+ * Basing on the tutorial:
+ * https://info.michael-simons.eu/2017/12/28/use-keycloak-with-your-spring-boot-2-application/
+ * https://github.com/michael-simons/keycloakdemo/blob/56d141a5faea3e00f20841a3475c37edf353bcf4/src/main/java/ac/simons/keycloakdemo/DemoApplication.java
+ */
+
+/**
+ * Constrainty dla ról
+ * https://www.thomasvitale.com/spring-boot-keycloak-security/
+ */
 
 @SpringBootApplication
 public class DemoApplication {
@@ -66,7 +77,7 @@ class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .and()
                     // Depends on your taste. You can configure single paths here
-                    // or allow everything a I did and then use method based security
+                    // or allow everything as I did and then use method based security
                     // like in the controller below
                     .authorizeRequests()
                         .anyRequest().permitAll()
@@ -76,7 +87,13 @@ class SecurityConfig {
                         // I don't want a page with different clients as login options
                         // So i use the constant from OAuth2AuthorizationRequestRedirectFilter
                         // plus the configured realm as immediate redirect to Keycloak
-                        .loginPage(DEFAULT_AUTHORIZATION_REQUEST_BASE_URI + "/" + realm);
+                        .loginPage(DEFAULT_AUTHORIZATION_REQUEST_BASE_URI + "/" + realm)
+                .and()
+                .logout()
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("http://localhost:8080/auth/realms/test/protocol/openid-connect/logout?redirect_uri=http://localhost:8082")
+                        .deleteCookies("JSESSIONID", "KEYCLOAK_IDENTITY")
+                        .invalidateHttpSession(true);
             }
         };
     }
