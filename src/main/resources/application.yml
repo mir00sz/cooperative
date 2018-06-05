@@ -14,7 +14,7 @@ spring:
       client:
         registration:
           # This 'Demo:' is the id used inside the redirect-uri-template and must be the same as your realm
-          test: 
+          test:
             client-id: test-app
             client-secret: cf55230e-d750-475d-94de-9775ce32bc63
             client-name: some client

@@ -1,5 +1,5 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2018-05-28 20:20:40.414
+-- Last modification date: 2018-05-31 07:34:33.039
 
 -- tables
 -- Table: cost
@@ -38,7 +38,6 @@ CREATE TABLE flat_tenants (
     id serial  NOT NULL,
     tenant_id int  NOT NULL,
     flat_id int  NOT NULL,
-    tenent_id varchar  NOT NULL,
     CONSTRAINT flat_tenants_pk PRIMARY KEY (id)
 );
 
@@ -48,21 +47,45 @@ CREATE TABLE property (
     street varchar  NOT NULL,
     street_nr int  NOT NULL,
     city varchar  NOT NULL,
-    post_code int  NOT NULL,
+    post_code varchar  NOT NULL,
     occupants_number int  NOT NULL,
     CONSTRAINT property_pk PRIMARY KEY (id)
+);
+
+-- Table: property_cost
+CREATE TABLE property_cost (
+    id serial  NOT NULL,
+    cost_id int  NOT NULL,
+    property_id int  NOT NULL,
+    CONSTRAINT property_cost_pk PRIMARY KEY (id)
 );
 
 -- Table: tenant
 CREATE TABLE tenant (
     id serial  NOT NULL,
-    name int  NOT NULL,
-    surname int  NOT NULL,
+    name varchar  NOT NULL,
+    surname varchar  NOT NULL,
     id_num bigint  NOT NULL,
     CONSTRAINT tenant_pk PRIMARY KEY (id)
 );
 
 -- foreign keys
+-- Reference: building_cost_cost (table: property_cost)
+ALTER TABLE property_cost ADD CONSTRAINT building_cost_cost
+    FOREIGN KEY (cost_id)
+    REFERENCES cost (id)
+    NOT DEFERRABLE
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: building_cost_property (table: property_cost)
+ALTER TABLE property_cost ADD CONSTRAINT building_cost_property
+    FOREIGN KEY (property_id)
+    REFERENCES property (id)
+    NOT DEFERRABLE
+    INITIALLY IMMEDIATE
+;
+
 -- Reference: cost_cost_type (table: cost)
 ALTER TABLE cost ADD CONSTRAINT cost_cost_type
     FOREIGN KEY (cost_type_id)
