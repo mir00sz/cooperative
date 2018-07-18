@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  cooperative:
+    build: .
+    container_name: cooperatives
+    image: cooperatives
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
