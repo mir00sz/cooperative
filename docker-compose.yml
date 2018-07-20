@@ -9,7 +9,25 @@ services:
       - "8082:8082"
     depends_on:
       - postgres
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=mysecretpassword
+      - DATABASE_NAME=cooperatives
+      - DATABASE_PORT=5432
   postgres:
     image: postgres
     ports:
       - "5432:5432"
+    volumes:
+      - ./src/main/resources/docker-postgresql-multiple-databases:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES="cooperatives","keycloak"
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+#  keycloak:
+#    image: jboss/keycloak
+#    depends_on:
+#      - postgres
+#    environment:
+#      -
