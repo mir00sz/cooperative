@@ -25,9 +25,17 @@ services:
       - POSTGRES_MULTIPLE_DATABASES="cooperatives","keycloak"
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=mysecretpassword
-#  keycloak:
-#    image: jboss/keycloak
-#    depends_on:
-#      - postgres
-#    environment:
-#      -
+  keycloak:
+    image: jboss/keycloak
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - DB_ADDR=postgres
+      - DB_PORT=5432
+      #- DB_DATABASE=keycloak
+      - DB_USER=postgres
+      - DB_PASSWORD=mysecretpassword
+      - KEYCLOAK_USER=keycloak
+      - KEYCLOAK_PASSWORD=keycloak
